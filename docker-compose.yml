@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  calculator:
+    build: .
+    container_name: calculator
+    volumes:
+      - .:/app
+    command: python -m calculator.main
+    environment:
+      - PYTHONUNBUFFERED=1
