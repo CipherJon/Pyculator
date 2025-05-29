@@ -4,6 +4,7 @@ This module contains unit tests for all calculator operations.
 """
 
 import pytest
+import math
 from calculator.operations import (
     add, subtract, multiply, divide, power,
     square_root, percentage, modulo, absolute
@@ -79,7 +80,13 @@ def test_edge_cases():
     assert add(1e-308, 1e-308) == 2e-308
     assert multiply(1e-308, 0) == 0
     
-    # Test NaN and Infinity
-    import math
-    assert math.isnan(add(float('nan'), 1))
-    assert math.isinf(add(float('inf'), 1)) 
+    # Test NaN handling
+    with pytest.raises(ValueError, match="Cannot perform addition with NaN values"):
+        add(float('nan'), 1)
+    with pytest.raises(ValueError, match="Cannot perform addition with NaN values"):
+        add(1, float('nan'))
+    
+    # Test Infinity handling
+    assert math.isinf(add(float('inf'), 1))
+    assert math.isinf(add(1, float('inf')))
+    assert math.isinf(add(float('inf'), float('inf'))) 

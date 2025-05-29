@@ -13,7 +13,11 @@ A feature-rich command-line calculator with support for various mathematical ope
   - Absolute value
 - Calculation history
 - Clear screen functionality
-- Comprehensive error handling
+- Comprehensive error handling:
+  - Input validation
+  - NaN detection and handling
+  - Division by zero protection
+  - Graceful handling of keyboard interrupts (Ctrl+C, Ctrl+D)
 - Type hints and documentation
 - Unit tests with pytest
 
@@ -65,6 +69,15 @@ python -m calculator.main
 - `h`: Show calculation history
 - `c`: Clear screen
 - `q`: Quit calculator
+
+### Error Handling
+
+The calculator includes comprehensive error handling:
+- Invalid numeric inputs are rejected with clear error messages
+- NaN (Not a Number) values are detected and rejected
+- Division by zero is prevented
+- Keyboard interrupts (Ctrl+C, Ctrl+D) are handled gracefully
+- All operations include proper input validation
 
 ## Development
 

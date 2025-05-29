@@ -4,17 +4,30 @@ This module provides a command-line interface for performing various mathematica
 """
 
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Callable, Dict, Any
 from calculator.operations import (
     add, subtract, multiply, divide, power,
     square_root, percentage, modulo, absolute
 )
 
+# Operation definitions: (function, num_args, format_string)
+OPERATIONS: Dict[str, Tuple[Callable[..., float], int, str]] = {
+    '1': (add, 2, "{0} + {1} = {2}"),
+    '2': (subtract, 2, "{0} - {1} = {2}"),
+    '3': (multiply, 2, "{0} * {1} = {2}"),
+    '4': (divide, 2, "{0} / {1} = {2}"),
+    '5': (power, 2, "{0} ^ {1} = {2}"),
+    '6': (square_root, 1, "√{0} = {1}"),
+    '7': (percentage, 2, "{0} is {2}% of {1}"),
+    '8': (modulo, 2, "{0} % {1} = {2}"),
+    '9': (absolute, 1, "|{0}| = {1}")
+}
+
 def clear_screen() -> None:
     """Clear the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def get_number(prompt: str) -> float:
+def get_number(prompt: str) -> float | None:
     """
     Get a valid number from user input.
     
@@ -22,13 +35,16 @@ def get_number(prompt: str) -> float:
         prompt (str): The prompt to display to the user
         
     Returns:
-        float: The valid number entered by the user
+        float | None: The valid number entered by the user, or None if interrupted
     """
     while True:
         try:
             return float(input(prompt))
         except ValueError:
             print("Invalid input. Please enter a valid number.")
+        except (EOFError, KeyboardInterrupt):
+            print("\nOperation cancelled by user.")
+            return None
 
 def display_menu() -> None:
     """Display the calculator menu."""
@@ -46,6 +62,27 @@ def display_menu() -> None:
     print("c. Clear Screen")
     print("q. Quit")
 
+def get_operation_inputs(num_args: int) -> List[float] | None:
+    """
+    Get the required number of inputs for an operation.
+    
+    Args:
+        num_args (int): Number of arguments required for the operation
+        
+    Returns:
+        List[float] | None: List of input numbers, or None if input was cancelled
+    """
+    inputs = []
+    prompts = ["Enter first number: ", "Enter second number: "]
+    
+    for i in range(num_args):
+        num = get_number(prompts[i])
+        if num is None:
+            return None
+        inputs.append(num)
+    
+    return inputs
+
 def perform_operation(choice: str, history: List[Tuple[str, float]]) -> None:
     """
     Perform the selected mathematical operation.
@@ -54,67 +91,27 @@ def perform_operation(choice: str, history: List[Tuple[str, float]]) -> None:
         choice (str): The operation choice
         history (List[Tuple[str, float]]): List to store calculation history
     """
+    if choice not in OPERATIONS:
+        return
+        
     try:
-        if choice == '1':  # Add
-            num1 = get_number("Enter first number: ")
-            num2 = get_number("Enter second number: ")
-            result = add(num1, num2)
-            print(f"Result: {num1} + {num2} = {result}")
-            history.append((f"{num1} + {num2}", result))
+        operation, num_args, format_str = OPERATIONS[choice]
+        
+        # Get inputs
+        inputs = get_operation_inputs(num_args)
+        if inputs is None:
+            return
             
-        elif choice == '2':  # Subtract
-            num1 = get_number("Enter first number: ")
-            num2 = get_number("Enter second number: ")
-            result = subtract(num1, num2)
-            print(f"Result: {num1} - {num2} = {result}")
-            history.append((f"{num1} - {num2}", result))
-            
-        elif choice == '3':  # Multiply
-            num1 = get_number("Enter first number: ")
-            num2 = get_number("Enter second number: ")
-            result = multiply(num1, num2)
-            print(f"Result: {num1} * {num2} = {result}")
-            history.append((f"{num1} * {num2}", result))
-            
-        elif choice == '4':  # Divide
-            num1 = get_number("Enter first number: ")
-            num2 = get_number("Enter second number: ")
-            result = divide(num1, num2)
-            print(f"Result: {num1} / {num2} = {result}")
-            history.append((f"{num1} / {num2}", result))
-            
-        elif choice == '5':  # Power
-            num1 = get_number("Enter base number: ")
-            num2 = get_number("Enter exponent: ")
-            result = power(num1, num2)
-            print(f"Result: {num1} ^ {num2} = {result}")
-            history.append((f"{num1} ^ {num2}", result))
-            
-        elif choice == '6':  # Square Root
-            num = get_number("Enter number: ")
-            result = square_root(num)
-            print(f"Result: √{num} = {result}")
-            history.append((f"√{num}", result))
-            
-        elif choice == '7':  # Percentage
-            num1 = get_number("Enter number: ")
-            num2 = get_number("Enter total: ")
-            result = percentage(num1, num2)
-            print(f"Result: {num1} is {result}% of {num2}")
-            history.append((f"{num1}% of {num2}", result))
-            
-        elif choice == '8':  # Modulo
-            num1 = get_number("Enter first number: ")
-            num2 = get_number("Enter second number: ")
-            result = modulo(num1, num2)
-            print(f"Result: {num1} % {num2} = {result}")
-            history.append((f"{num1} % {num2}", result))
-            
-        elif choice == '9':  # Absolute
-            num = get_number("Enter number: ")
-            result = absolute(num)
-            print(f"Result: |{num}| = {result}")
-            history.append((f"|{num}|", result))
+        # Perform operation
+        result = operation(*inputs)
+        
+        # Format and display result
+        if num_args == 1:
+            print(f"Result: {format_str.format(inputs[0], result)}")
+            history.append((format_str.format(inputs[0], result), result))
+        else:
+            print(f"Result: {format_str.format(inputs[0], inputs[1], result)}")
+            history.append((format_str.format(inputs[0], inputs[1], result), result))
             
     except ValueError as e:
         print(f"Error: {str(e)}")
@@ -134,7 +131,7 @@ def show_history(history: List[Tuple[str, float]]) -> None:
     
     print("\nCalculation History:")
     for i, (operation, result) in enumerate(history, 1):
-        print(f"{i}. {operation} = {result}")
+        print(f"{i}. {operation}")
 
 def main() -> None:
     """Main calculator function."""
@@ -154,7 +151,7 @@ def main() -> None:
             show_history(history)
         elif choice == 'c':
             clear_screen()
-        elif choice in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+        elif choice in OPERATIONS:
             perform_operation(choice, history)
         else:
             print("Invalid choice. Please try again.")

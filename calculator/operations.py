@@ -4,6 +4,8 @@ This module provides various mathematical operations including basic arithmetic,
 power, square root, percentage, modulo, and absolute value calculations.
 """
 
+import math
+
 def add(a: float, b: float) -> float:
     """
     Add two numbers.
@@ -14,7 +16,12 @@ def add(a: float, b: float) -> float:
         
     Returns:
         float: Sum of a and b
+        
+    Raises:
+        ValueError: If either input is NaN
     """
+    if math.isnan(a) or math.isnan(b):
+        raise ValueError("Cannot perform addition with NaN values")
     return a + b
 
 def subtract(a: float, b: float) -> float:
