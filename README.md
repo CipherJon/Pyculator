@@ -1,81 +1,100 @@
-# Pyculator
+# Advanced Calculator
 
-A simple calculator application implemented in Python with extendable operations.
+A feature-rich command-line calculator with support for various mathematical operations, calculation history, and comprehensive error handling.
 
 ## Features
 
-- Basic arithmetic operations (+, -, *, /)
-- Interactive command-line interface
-- Modular architecture for easy extension
-- Unit test coverage
-
-## Requirements
-
-- Python 3.8+
-- Dependencies:
-  - setuptools==68.2.2
-
-Development dependencies:
-- pytest==8.0.0
-- pytest-cov==4.1.0
-- flake8==6.1.0
+- Basic arithmetic operations (addition, subtraction, multiplication, division)
+- Advanced mathematical operations:
+  - Power/exponentiation
+  - Square root
+  - Percentage calculations
+  - Modulo operation
+  - Absolute value
+- Calculation history
+- Clear screen functionality
+- Comprehensive error handling
+- Type hints and documentation
+- Unit tests with pytest
 
 ## Installation
 
-### Using pip
-```sh
-pip install -r requirements.txt
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/calculator.git
+cd calculator
 ```
 
-### From source
-```sh
-python setup.py install
+2. Create and activate a virtual environment:
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
 ```
 
 ## Usage
 
-### Command-line interface
-```sh
+Run the calculator:
+```bash
 python -m calculator.main
 ```
-Example session:
+
+### Available Operations
+
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Power
+6. Square Root
+7. Percentage
+8. Modulo
+9. Absolute Value
+
+### Additional Commands
+
+- `h`: Show calculation history
+- `c`: Clear screen
+- `q`: Quit calculator
+
+## Development
+
+### Running Tests
+
+Run the test suite:
+```bash
+pytest
 ```
-Enter operation (+, -, *, /): +
-Enter first number: 5
-Enter second number: 3
-Result: 8.0
+
+Run tests with coverage report:
+```bash
+pytest --cov=calculator
 ```
 
-### As a Python module
-```python
-from calculator.operations import add
+### Code Style
 
-result = add(10, 5)
-print(result)  # 15.0
-```
-
-## Running Tests
-
-```sh
-# Run all tests with coverage
-pytest --cov=calculator tests/
-
-# View coverage report
-pytest --cov-report term-missing
+The project follows PEP 8 style guidelines. You can check the code style using:
+```bash
+flake8 calculator tests
 ```
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
-
-Please ensure:
-- All tests pass
-- Code follows PEP8 guidelines (verified with flake8)
-- New features include appropriate tests
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
-Distributed under the MIT License. See `LICENSE` for more information.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
